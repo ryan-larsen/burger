@@ -1,7 +1,7 @@
 {
   "name": "burger",
   "version": "1.0.0",
-  "description": "App that allows users to enter in a burger choice and it populates a sql database and returns the values",
+  "description": "",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,15 +9,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ryan-larsen/burger.git"
+    "url": "git+https://github.com/nr830411/burger.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ryan-larsen/burger/issues"
+    "url": "https://github.com/nr830411/burger/issues"
   },
-  "homepage": "https://github.com/ryan-larsen/burger#readme",
+  "homepage": "https://github.com/nr830411/burger#readme",
   "dependencies": {
     "express": "^4.17.1",
     "express-handlebars": "^3.1.0",
