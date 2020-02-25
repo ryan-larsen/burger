@@ -2,7 +2,7 @@
 const mysql = require('mysql')
 
 // Create the MySQL connection object
-var connection
+let connection
 
 if (process.env.JAWSDB_URL) {
   // DB is JawsDB on Heroku
@@ -13,7 +13,7 @@ if (process.env.JAWSDB_URL) {
     port: 3306,
     host: 'localhost',
     user: 'root',
-    password: 'password',
+    password: '',
     database: 'burgers_db'
   })
 };
