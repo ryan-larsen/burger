@@ -1,65 +1,94 @@
-//  Set up connection for ORM
-const connection = require('./connection.js')
+// Import the MySQL connection object
+var connection = require('./connection.js')
 
-const orm = {
-  selectAll: function (table) {
-    const queryString = 'SELECT * FROM ??'
-    connection.query(queryString,
-      [table],
-      (err, res) => {
-        if (err) { throw err }
-        console.log(res)
-      })
-  },
-  insertOne: function (table, column, value) {
-    const queryString = 'INSERT INTO ?? ?? VALUES ?'
-    connection.query(queryString,
-      [table, column, value],
-      (err, res) => {
-        if (err) { throw err }
-        console.log(res)
-      })
-  },
-  updateOne: function (table, column, value) {
-    const queryString = 'UPDATE ?? SET ?? WHERE ?? = ?'
-    connection.query(queryString,
-      [table, column, value],
-      (err, res) => {
-        if (err) { throw err }
-        console.log(res)
-      })
-  },
-  selectWhere: function (tableInput, colToSearch, valOfCol) {
-    const queryString = 'SELECT * FROM ?? WHERE ?? = ?'
-    connection.query(queryString,
-      [tableInput, colToSearch, valOfCol],
-      (err, res) => {
-        if (err) { throw err }
-        console.log(res)
-      })
-  },
-  selectAndOrder: function (whatToSelect, table, orderCol) {
-    const queryString = 'SELECT ?? FROM ?? ORDER BY ?? DESC'
-    console.log(queryString)
-    connection.query(queryString,
-      [whatToSelect, table, orderCol],
-      (err, res) => {
-        if (err) { throw err }
-        console.log(res)
-      })
-  },
-  findWhoHasMost: function (tableOneCol, tableTwoForeignKey, tableOne, tableTwo) {
-    const queryString =
-            'SELECT ??, COUNT(??) AS count FROM ?? LEFT JOIN ?? ON ??.??= ??.id GROUP BY ?? ORDER BY count DESC LIMIT 1'
-    connection.query(queryString,
-      [tableOneCol, tableOneCol, tableOne, tableTwo, tableTwo, tableTwoForeignKey, tableOne, tableOneCol],
-      (err, res) => {
-        if (err) { throw err }
-        console.log(res)
+// Helper function for generating MySQL syntax
+function printQuestionMarks (num) {
+  var arr = []
+
+  for (var i = 0; i < num; i++) {
+    arr.push('?')
+  }
+
+  return arr.toString()
+}
+
+// Helper function for generating My SQL syntax
+function objToSql (ob) {
+  var arr = []
+
+  for (var key in ob) {
+    arr.push(key + '=' + ob[key])
+  }
+
+  return arr.toString()
+}
+
+// Create the ORM object to perform SQL queries
+var orm = {
+  // Function that returns all table entries
+  selectAll: function (tableInput, cb) {
+    // Construct the query string that returns all rows from the target table
+    var queryString = 'SELECT * FROM ' + tableInput + ';'
+
+    // Perform the database query
+    connection.query(queryString, function (err, result) {
+      if (err) {
+        throw err
       }
-    )
+
+      // Return results in callback
+      cb(result)
+    })
+  },
+
+  // Function that insert a single table entry
+  insertOne: function (table, cols, vals, cb) {
+    // Construct the query string that inserts a single row into the target table
+    var queryString = 'INSERT INTO ' + table
+
+    queryString += ' ('
+    queryString += cols.toString()
+    queryString += ') '
+    queryString += 'VALUES ('
+    queryString += printQuestionMarks(vals.length)
+    queryString += ') '
+
+    // console.log(queryString);
+
+    // Perform the database query
+    connection.query(queryString, vals, function (err, result) {
+      if (err) {
+        throw err
+      }
+
+      // Return results in callback
+      cb(result)
+    })
+  },
+
+  // Function that updates a single table entry
+  updateOne: function (table, objColVals, condition, cb) {
+    // Construct the query string that updates a single entry in the target table
+    var queryString = 'UPDATE ' + table
+
+    queryString += ' SET '
+    queryString += objToSql(objColVals)
+    queryString += ' WHERE '
+    queryString += condition
+
+    // console.log(queryString);
+
+    // Perform the database query
+    connection.query(queryString, function (err, result) {
+      if (err) {
+        throw err
+      }
+
+      // Return results in callback
+      cb(result)
+    })
   }
 }
 
-// Export ORM for server.js to use
+// Export the orm object for use in other modules
 module.exports = orm

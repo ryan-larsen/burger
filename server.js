@@ -1,28 +1,25 @@
-// Import Express for application
+// Pull in required dependencies
 const express = require('express')
+const bodyParser = require('body-parser')
+const methodOverride = require('method-override')
 
-// Set up port for app, process.env.PORT lets port be set by Heroku
-const PORT = process.env.PORT || 3000
+const port = process.env.PORT || 3000
+
 const app = express()
 
-// Serve static content for app from "public" directory in app directory
-app.use(express.static('public'))
+app.use(express.static(process.cwd() + '/public'))
 
-// Parse request body as JSON
-app.use(express.urlencoded({ extended: true }))
-app.use(express.json())
+app.use(bodyParser.urlencoded({ extended: false }))
 
-// Set up Express Handlebars
+app.use(methodOverride('_method'))
+
 const exphbs = require('express-handlebars')
+
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
 app.set('view engine', 'handlebars')
 
-// Import routes, give server access to them
-const routes = require('./controllers/burger_controller.js')
-app.use(routes)
+const routes = require('./controllers/burgers_controller.js')
 
-// Start server to listen to client requests
-app.listen(PORT, () => {
-  // Log server has started
-  console.log('Server listening on: http://localhost:' + PORT)
-})
+app.use('/', routes)
+
+app.listen(port)
