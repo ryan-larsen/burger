@@ -1,7 +1,6 @@
 // Pull in required dependencies
 const express = require('express')
 const bodyParser = require('body-parser')
-const methodOverride = require('method-override')
 
 const port = process.env.PORT || 3000
 
@@ -10,8 +9,6 @@ const app = express()
 app.use(express.static(process.cwd() + '/public'))
 
 app.use(bodyParser.urlencoded({ extended: false }))
-
-app.use(methodOverride('_method'))
 
 const exphbs = require('express-handlebars')
 
